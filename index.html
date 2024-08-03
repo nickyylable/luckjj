@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="Content-Security-Policy" content="img-src 'self' data: https://yastatic.net;">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+    <title>Random Counter</title>
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        @font-face {
+            font-family: 'Intro';
+            src: url('intro.otf') format('opentype');
+            font-weight: normal;
+            font-style: normal;
+        }
+        body, html {
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            background-image: url('fon.jpg');
+            background-size: cover;
+            background-repeat: no-repeat;
+            background-position: center;
+            background-attachment: fixed;
+        }
+        .title {
+            font-family: 'Intro', sans-serif;
+            font-size: 2em;
+            color: white;
+            margin-bottom: 30px;
+        }
+        .circle {
+            width: 200px;
+            height: 200px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background-color: black;
+            border: 13px solid purple;
+            border-radius: 50%;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+            font-size: 3em;
+            color: white;
+            position: relative;
+        }
+        .circle .counter-prefix {
+            font-family: sans-serif;
+        }
+        .circle .counter-number {
+            font-family: 'Intro', sans-serif;
+        }
+        .btn-signal, .btn-ok {
+            width: 150px;
+            font-size: 1em;
+            position: relative;
+            font-family: 'Intro', sans-serif;
+            border-radius: 50px;
+            padding: 10px 20px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            margin: 10px;
+        }
+        #jet {
+            position: absolute;
+            top: 20%;
+            left: 0%;
+            width: 150px;
+            height: 150px;
+            background: url('1.gif') no-repeat;
+            background-size: contain;
+            animation: moveBackAndForth 12s ease-in-out infinite;
+            z-index: 10;
+        }
+        #sub-jet {
+            position: absolute;
+            top: 90px;
+            left: -83px;
+            width: 120px;
+            height: 120px;
+            background: url('2.gif') no-repeat;
+            background-size: contain;
+            z-index: 10;
+        }
+        @keyframes moveBackAndForth {
+            0%, 100% { transform: translate(0, 0); }
+            30% { transform: translate(200px, 200px); }
+        }
+    </style>
+</head>
+<body>
+    <div id="jet">
+        <div id="sub-jet"></div>
+    </div>
+    <div class="container text-center">
+        <div class="title">N$GOCIO</div>
+        <div class="circle">
+            <span class="counter-prefix">x</span><span class="counter-number" id="counter">0.00</span>
+        </div>
+        <input type="number" id="targetInput" class="form-control mb-3" placeholder="Введите коэффициент">
+        <button class="btn btn-primary btn-ok" onclick="confirmTarget()">ОК</button>
+        <button class="btn btn-primary btn-signal" onclick="startCounter()">Сигнал</button>
+    </div>
+    <script>
+        let interval = null;
+        let target = 0;
+
+        function confirmTarget() {
+            let targetInput = document.getElementById('targetInput');
+            let okButton = document.querySelector('.btn-ok');
+            target = parseFloat(targetInput.value);
+            if (isNaN(target) || target <= 0) {
+                alert('Введите корректное значение коэффициента.');
+                return;
+            }
+            // Скрываем поле ввода и кнопку ОК
+            targetInput.style.display = 'none';
+            okButton.style.display = 'none';
+        }
+
+        function startCounter() {
+            if (target <= 0) {
+                alert('Сначала введите коэффициент и нажмите ОК.');
+                return;
+            }
+            clearInterval(interval);
+            let counterNumber = document.getElementById('counter');
+            let current = 0.01;
+            counterNumber.textContent = current.toFixed(2);
+
+            interval = setInterval(function() {
+                let increment = (target - current) / 100 + 0.01;
+                current += increment;
+                if (current >= target) {
+                    clearInterval(interval);
+                    current = target;
+                }
+                counterNumber.textContent = current.toFixed(2);
+            }, 20);
+        }
+    </script>
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.3/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.amazonaws.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+</html>
